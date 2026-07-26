@@ -104,6 +104,28 @@ Header(
         font-style: italic;
         text-align: center;
       }
+
+      .norming-answer-option {
+        box-sizing: border-box;
+        width: 380px;
+        min-height: 92px;
+        padding: 12px 22px;
+        border: 2px solid #777;
+        border-radius: 9px;
+        background: #ffffff;
+        text-align: center;
+      }
+
+      .norming-answer-key {
+        margin-bottom: 7px;
+        font-size: 21px;
+        font-weight: 700;
+      }
+
+      .norming-answer-text {
+        font-size: 24px;
+        line-height: 1.25;
+      }
     `;
 
     document.head.appendChild(style);
@@ -868,6 +890,7 @@ function initializeTrialState(
     response_code: "",
     response_text: "",
     response_side: "",
+    response_key: "",
     rt_ms: null,
     timed_out: 0
   };
@@ -892,7 +915,8 @@ function recordChoice(
   stateKey,
   code,
   text,
-  side
+  side,
+  key
 ) {
   const state =
     window.__normingState[
@@ -917,6 +941,9 @@ function recordChoice(
 
   state.response_side =
     side;
+
+  state.response_key =
+    key;
 
   state.rt_ms =
     Math.round(
@@ -946,6 +973,9 @@ function finalizeTrialState(
       "";
 
     state.response_side =
+      "";
+
+    state.response_key =
       "";
 
     state.rt_ms =
@@ -988,11 +1018,17 @@ function createNormingChoiceTrial(
       config.stateKey
     );
 
-  const leftButtonName =
-    "left_" + uid;
+  const leftAnswerName =
+    "left_answer_" + uid;
 
-  const rightButtonName =
-    "right_" + uid;
+  const rightAnswerName =
+    "right_answer_" + uid;
+
+  const leftKeyName =
+    "left_key_" + uid;
+
+  const rightKeyName =
+    "right_key_" + uid;
 
   const timerName =
     "response_window_" +
@@ -1055,113 +1091,51 @@ function createNormingChoiceTrial(
       RESPONSE_TIMEOUT_MS
     ),
 
-    newButton(
-      leftButtonName,
-      leftText
+    newText(
+      leftAnswerName,
+      (
+        '<div class="norming-answer-option">' +
+        '<div class="norming-answer-key">F</div>' +
+        '<div class="norming-answer-text">' +
+        escapeHTML(leftText) +
+        "</div></div>"
+      )
     )
-      .css({
-        width: "380px",
-        "min-height": "72px",
-        padding: "14px 22px",
-        "font-size": "24px",
-        "line-height": "1.25",
-        cursor: "pointer",
-        border:
-          "2px solid #777",
-        "border-radius":
-          "9px",
-        background:
-          "#ffffff"
-      })
-      .log("first")
-      .callback(
-        newFunction(
-          "record_left_" + uid,
-          function () {
-            recordChoice(
-              stateKey,
-              leftCode,
-              leftText,
-              "left"
-            );
-          }
-        ).call(),
+      .cssContainer({
+        width: "380px"
+      }),
 
-        getButton(
-          leftButtonName
-        ).disable(),
-
-        getButton(
-          rightButtonName
-        ).disable(),
-
-        getTimer(
-          timerName
-        ).stop()
-      ),
-
-    newButton(
-      rightButtonName,
-      rightText
+    newText(
+      rightAnswerName,
+      (
+        '<div class="norming-answer-option">' +
+        '<div class="norming-answer-key">J</div>' +
+        '<div class="norming-answer-text">' +
+        escapeHTML(rightText) +
+        "</div></div>"
+      )
     )
-      .css({
-        width: "380px",
-        "min-height": "72px",
-        padding: "14px 22px",
-        "font-size": "24px",
-        "line-height": "1.25",
-        cursor: "pointer",
-        border:
-          "2px solid #777",
-        "border-radius":
-          "9px",
-        background:
-          "#ffffff"
-      })
-      .log("first")
-      .callback(
-        newFunction(
-          "record_right_" + uid,
-          function () {
-            recordChoice(
-              stateKey,
-              rightCode,
-              rightText,
-              "right"
-            );
-          }
-        ).call(),
-
-        getButton(
-          leftButtonName
-        ).disable(),
-
-        getButton(
-          rightButtonName
-        ).disable(),
-
-        getTimer(
-          timerName
-        ).stop()
-      ),
+      .cssContainer({
+        width: "380px"
+      }),
 
     newCanvas(
       "answers_" + uid,
       1000,
-      115
+      130
     )
       .add(
         85,
         15,
-        getButton(
-          leftButtonName
+        getText(
+          leftAnswerName
         )
       )
       .add(
         535,
         15,
-        getButton(
-          rightButtonName
+        getText(
+          rightAnswerName
         )
       )
       .center()
@@ -1171,15 +1145,81 @@ function createNormingChoiceTrial(
       "hint_" + uid,
       (
         '<div class="norming-hint">' +
-        "Bitte wählen Sie die spontan " +
-        "natürlichere Interpretation." +
+        "Drücken Sie F für die linke oder " +
+        "J für die rechte Interpretation." +
         "</div>"
       )
     ).print(),
 
+    newKey(
+      leftKeyName,
+      "F"
+    )
+      .disable()
+      .log("first")
+      .callback(
+        newFunction(
+          "record_left_" + uid,
+          function () {
+            recordChoice(
+              stateKey,
+              leftCode,
+              leftText,
+              "left",
+              "F"
+            );
+          }
+        ).call(),
+
+        getKey(
+          leftKeyName
+        ).disable(),
+
+        getKey(
+          rightKeyName
+        ).disable(),
+
+        getTimer(
+          timerName
+        ).stop()
+      ),
+
+    newKey(
+      rightKeyName,
+      "J"
+    )
+      .disable()
+      .log("first")
+      .callback(
+        newFunction(
+          "record_right_" + uid,
+          function () {
+            recordChoice(
+              stateKey,
+              rightCode,
+              rightText,
+              "right",
+              "J"
+            );
+          }
+        ).call(),
+
+        getKey(
+          leftKeyName
+        ).disable(),
+
+        getKey(
+          rightKeyName
+        ).disable(),
+
+        getTimer(
+          timerName
+        ).stop()
+      ),
+
     /*
      * The RT clock starts after the sentence,
-     * question and buttons have been displayed.
+     * question and answer options have been displayed.
      */
     newFunction(
       "mark_onset_" + uid,
@@ -1190,17 +1230,36 @@ function createNormingChoiceTrial(
       }
     ).call(),
 
+    getTimer(
+      timerName
+    ).start(),
+
+    getKey(
+      leftKeyName
+    ).enable(),
+
+    getKey(
+      rightKeyName
+    ).enable(),
+
     /*
      * This timer stops either when:
      *
-     * 1. the participant selects a button; or
+     * 1. the participant presses F or J; or
      * 2. 30 seconds have elapsed.
      */
     getTimer(
       timerName
     )
-      .start()
       .wait(),
+
+    getKey(
+      leftKeyName
+    ).disable(),
+
+    getKey(
+      rightKeyName
+    ).disable(),
 
     newFunction(
       "finalize_state_" + uid,
@@ -1340,12 +1399,20 @@ function createNormingChoiceTrial(
       leftText
     )
     .log(
+      "left_response_key",
+      "F"
+    )
+    .log(
       "right_answer_code",
       rightCode
     )
     .log(
       "right_answer_text",
       rightText
+    )
+    .log(
+      "right_response_key",
+      "J"
     )
     .log(
       "answer_sides_swapped",
@@ -1395,6 +1462,15 @@ function createNormingChoiceTrial(
         return stateValue(
           stateKey,
           "response_side"
+        );
+      }
+    )
+    .log(
+      "response_key",
+      function () {
+        return stateValue(
+          stateKey,
+          "response_key"
         );
       }
     )
@@ -1541,9 +1617,10 @@ newTrial(
 
   newText(
     "inst_3",
-    "Klicken Sie auf die Antwort, " +
-      "die Ihrer spontanen Interpretation " +
-      "am ehesten entspricht."
+    "Drücken Sie die Taste F für die " +
+      "linke Antwort oder die Taste J für " +
+      "die rechte Antwort. Verwenden Sie " +
+      "für Ihre Antworten nicht die Maus."
   ),
 
   newText(
