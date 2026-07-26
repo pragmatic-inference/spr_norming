@@ -1636,7 +1636,10 @@ newTrial(
     "Lesen Sie aufmerksam, aber überlegen " +
       "Sie nicht unnötig lange. Für jede " +
       "Antwort stehen höchstens 30 Sekunden " +
-      "zur Verfügung."
+      "zur Verfügung. Nach 30 Sekunden wird " +
+      "die aktuelle Aufgabe automatisch " +
+      "übersprungen und die nächste Aufgabe " +
+      "angezeigt."
   ),
 
   newButton(
