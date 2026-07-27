@@ -188,6 +188,30 @@ function sanitizeId(value) {
  * weak masculine nouns.
  */
 const NOMINATIVE_NP_OVERRIDES = {
+  "male|den bullen": "Der Bulle",
+  "male|den fremden": "Der Fremde",
+  "male|den gefangenen": "Der Gefangene",
+  "male|den herren": "Der Herr",
+  "male|den interessenten": "Der Interessent",
+  "male|den jugendlichen": "Der Jugendliche",
+  "male|den liebsten": "Der Liebste",
+  "male|den ministranten": "Der Ministrant",
+  "male|den nachbarn": "Der Nachbar",
+  "male|den neffen": "Der Neffe",
+  "male|den obdachlosen": "Der Obdachlose",
+  "male|den pagen": "Der Page",
+  "male|den parteigenossen": "Der Parteigenosse",
+  "male|den patienten": "Der Patient",
+  "male|den prinzen": "Der Prinz",
+  "male|den probanden": "Der Proband",
+  "male|den referenten": "Der Referent",
+  "male|den rivalen": "Der Rivale",
+  "male|den senioren": "Der Senior",
+  "male|den soldaten": "Der Soldat",
+  "male|den touristen": "Der Tourist",
+  "male|den zeugen": "Der Zeuge",
+  "male|den zoologen": "Der Zoologe",
+
   "male|den löwen": "Der Löwe",
   "male|dem löwen": "Der Löwe",
 
